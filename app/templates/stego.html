@@ -207,6 +207,34 @@ endblock %} {% block content %}
     });
   }
 
+  function enableDragAndDrop(dropBoxSelector, inputId) {
+    const dropBox = document.querySelector(dropBoxSelector);
+    const fileInput = document.getElementById(inputId);
+
+    // Highlight on drag over
+    dropBox.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropBox.classList.add("dragover");
+    });
+
+    // Remove highlight when leaving
+    dropBox.addEventListener("dragleave", () => {
+      dropBox.classList.remove("dragover");
+    });
+
+    // Handle file drop
+    dropBox.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropBox.classList.remove("dragover");
+
+      const files = e.dataTransfer.files;
+      if (files.length) {
+        fileInput.files = files; // Assign dropped files to input
+        fileInput.dispatchEvent(new Event("change")); // Trigger filename update
+      }
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     updateFileName("upload");
     updateFileName("upload_decrypt");
@@ -214,9 +242,12 @@ endblock %} {% block content %}
     attachFakeProgress("encrypt-form");
     attachFakeProgress("decrypt-form");
 
-    // Enable show/hide password
     setupPasswordToggle("password", "showHidePassword");
     setupPasswordToggle("password_decrypt", "showHidePasswordDecrypt");
+
+    // Enable drag and drop
+    enableDragAndDrop(".encrypt-section .drop-box", "upload");
+    enableDragAndDrop(".decrypt-section .drop-box", "upload_decrypt");
   });
 </script>
 {% endblock %}

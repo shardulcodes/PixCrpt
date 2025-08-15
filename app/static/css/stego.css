@@ -192,6 +192,10 @@ button.btn:hover {
   color: #aaa;
   margin: 0.25rem 0 0.75rem;
 }
+.drop-box.dragover {
+  border: 2px dashed #007bff;
+  background-color: rgba(0, 123, 255, 0.05);
+}
 
 .main-header {
   padding: 1rem 0;
