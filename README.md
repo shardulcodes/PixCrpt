@@ -1,8 +1,8 @@
-# Stego Tool – Hide & Recover Files in Images
+# PixCrypt – Hide & Recover Files in Images
 
 ## Overview
 
-Stego Tool is a Python + Flask-based application that allows you to **securely hide entire files or folders inside image files** and later **recover them**.  
+PixCrypt is a Python + Flask-based application that allows you to **securely hide entire files or folders inside image files** and later **recover them**.  
 It is designed for scenarios where sensitive data needs to be **hidden in plain sight** using steganography.
 
 ## Features
@@ -39,7 +39,7 @@ Ensure you have the following installed:
    cd <your-repo-name>
    ```
 
-````
+
 
 2. Create and activate a virtual environment:
 
