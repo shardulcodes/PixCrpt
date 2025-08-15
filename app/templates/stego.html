@@ -1,0 +1,222 @@
+{% extends "base.html" %} {% block title %}Encrypt & Decrypt - Stego Tool{%
+endblock %} {% block content %}
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %} {% if messages
+%}
+<ul class="messages">
+  {% for category, message in messages %}
+  <li class="{{ category }}">
+    <i class="fas fa-info-circle"></i> {{ message }}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %} {% endwith %}
+
+<main class="tool-grid">
+  <!-- Encrypt Section -->
+  <section class="tool-card encrypt-section">
+    <h2><i class="fas fa-lock"></i> Encrypt Folder</h2>
+    <form
+      id="encrypt-form"
+      method="POST"
+      action="/stego/"
+      enctype="multipart/form-data"
+    >
+      <div class="drop-card">
+        <label for="upload"><i class="fas fa-folder-open"></i> Folder</label>
+        <div class="drop-box">
+          <header><h4>Select a folder to encrypt</h4></header>
+          <p>Multiple files supported</p>
+          <input
+            type="file"
+            name="upload"
+            id="upload"
+            webkitdirectory
+            directory
+            multiple
+            hidden
+            required
+          />
+          <button
+            type="button"
+            class="btn"
+            onclick="document.getElementById('upload').click();"
+          >
+            <i class="fas fa-upload btn-icon"></i> Choose Folder
+          </button>
+        </div>
+      </div>
+      <label for="password" class="password-label">
+        <i class="fas fa-key"></i> Set Password
+      </label>
+      <div class="password-wrapper">
+        <input
+          type="password"
+          name="password"
+          id="password"
+          placeholder="Enter a strong password"
+          required
+        />
+        <i class="fa fa-eye" aria-hidden="true" id="showHidePassword"></i>
+      </div>
+
+      <div class="progress-wrapper" style="display: none">
+        <div class="progress-bar"></div>
+      </div>
+
+      <button type="submit" class="btn">
+        <i class="fas fa-shield-alt btn-icon"></i> Encrypt & Convert
+      </button>
+    </form>
+
+    {% if image_url %}
+    <div class="image-preview">
+      <h3><i class="fas fa-image"></i> Encrypted Image</h3>
+      <a href="{{ image_url }}" download>
+        <img src="{{ image_url }}" alt="Encrypted Image" />
+      </a>
+      <p><i class="fas fa-download"></i> Click the image to download</p>
+    </div>
+    {% endif %}
+  </section>
+
+  <!-- Decrypt Section -->
+  <section class="tool-card decrypt-section">
+    <h2><i class="fas fa-unlock-alt"></i> Decrypt Image</h2>
+    <form
+      id="decrypt-form"
+      method="POST"
+      action="/stego/decrypt"
+      enctype="multipart/form-data"
+    >
+      <div class="drop-card">
+        <label for="upload_decrypt">
+          <i class="fas fa-upload"></i> Encrypted Image
+        </label>
+        <div class="drop-box">
+          <header><h4>Select PNG image to decrypt</h4></header>
+          <p>Only .png files allowed</p>
+          <input
+            type="file"
+            name="upload_decrypt"
+            id="upload_decrypt"
+            accept="image/png"
+            hidden
+            required
+          />
+          <button
+            type="button"
+            class="btn"
+            onclick="document.getElementById('upload_decrypt').click();"
+          >
+            <i class="fas fa-file-image btn-icon"></i> Choose Image
+          </button>
+        </div>
+      </div>
+
+      <label for="password_decrypt">
+        <i class="fas fa-key"></i> Enter Password
+      </label>
+      <div class="password-wrapper">
+        <input
+          type="password"
+          name="password_decrypt"
+          id="password_decrypt"
+          placeholder="Enter the password used during encryption"
+          required
+        />
+        <i
+          class="fa fa-eye"
+          aria-hidden="true"
+          id="showHidePasswordDecrypt"
+        ></i>
+      </div>
+
+      <div class="progress-wrapper" style="display: none">
+        <div class="progress-bar"></div>
+      </div>
+
+      <button type="submit" class="btn">
+        <i class="fas fa-unlock btn-icon"></i> Decrypt & Download Folder
+      </button>
+    </form>
+  </section>
+</main>
+{% endblock %} {% block head %}
+<script>
+  function updateFileName(inputId) {
+    const input = document.getElementById(inputId);
+    input.addEventListener("change", () => {
+      const header = input.closest(".drop-box").querySelector("header h4");
+      if (input.files.length > 0) {
+        header.textContent =
+          input.files.length > 1
+            ? `${input.files.length} files selected`
+            : input.files[0].name;
+      }
+    });
+  }
+
+  function attachFakeProgress(formId) {
+    const form = document.getElementById(formId);
+    if (!form) return;
+
+    const progressWrapper = form.querySelector(".progress-wrapper");
+    const progressBar = progressWrapper.querySelector(".progress-bar");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault(); // stop normal submission
+
+      progressWrapper.style.display = "block";
+      let progress = 0;
+
+      const interval = setInterval(() => {
+        progress += 1;
+        progressBar.style.width = progress + "%";
+
+        if (progress >= 100) {
+          clearInterval(interval);
+          form.submit(); // continue after fake progress
+        }
+      }, 30); // ~3 seconds
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    updateFileName("upload");
+    updateFileName("upload_decrypt");
+
+    attachFakeProgress("encrypt-form");
+    attachFakeProgress("decrypt-form");
+  });
+  function setupPasswordToggle(inputId, iconId) {
+    const passwordField = document.getElementById(inputId);
+    const toggleIcon = document.getElementById(iconId);
+
+    toggleIcon.addEventListener("click", function () {
+      if (passwordField.type === "password") {
+        passwordField.type = "text";
+        toggleIcon.classList.remove("fa-eye");
+        toggleIcon.classList.add("fa-eye-slash");
+      } else {
+        passwordField.type = "password";
+        toggleIcon.classList.remove("fa-eye-slash");
+        toggleIcon.classList.add("fa-eye");
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    updateFileName("upload");
+    updateFileName("upload_decrypt");
+
+    attachFakeProgress("encrypt-form");
+    attachFakeProgress("decrypt-form");
+
+    // Enable show/hide password
+    setupPasswordToggle("password", "showHidePassword");
+    setupPasswordToggle("password_decrypt", "showHidePasswordDecrypt");
+  });
+</script>
+{% endblock %}

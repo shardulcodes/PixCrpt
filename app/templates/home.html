@@ -1,0 +1,38 @@
+{% extends "base.html" %} {% block title %}Welcome | Stego Tool{% endblock %} {%
+block content %}
+<div class="home-page container">
+  <h2>
+    Welcome to the
+    <span class="highlight">Stego Encryptor & Decryptor</span> Tool
+  </h2>
+  <p>
+    Easily and securely <strong>hide folders inside PNG images</strong> or
+    <strong>extract them back</strong> — all with password protection.
+  </p>
+
+  <div class="home-buttons">
+    <a href="/stego/" class="btn" aria-label="Start Encrypting">
+      <i class="fas fa-lock btn-icon"></i> Start Encrypting
+    </a>
+    <a href="/stego/" class="btn" aria-label="Start Decrypting">
+      <i class="fas fa-unlock-alt btn-icon"></i> Start Decrypting
+    </a>
+  </div>
+
+  <section class="home-about">
+    <h3>What can you do?</h3>
+    <ul>
+      <li>
+        Hide multiple files or folders inside a
+        <strong>single PNG image</strong>
+      </li>
+      <li>Encrypt & decrypt using a <strong>secure password</strong></li>
+      <li>Preview the <strong>encrypted output image</strong> before saving</li>
+      <li>
+        Recover your hidden content
+        <strong>only with the correct password</strong>
+      </li>
+    </ul>
+  </section>
+</div>
+{% endblock %}
