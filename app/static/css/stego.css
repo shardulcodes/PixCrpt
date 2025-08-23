@@ -202,25 +202,82 @@ button.btn:hover {
   border-bottom: 1px solid #2a2a2a;
   margin-bottom: 2rem;
 }
-
-/* navbar */
-.navbar {
-  margin-top: 0.5rem;
-  display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
+.main-header .tagline {
+  font-size: 1.2rem; /* smaller than main title */
+  font-weight: 400; /* lighter font weight */
+  color: #888; /* subtle color */
+  margin-top: 5px; /* space below main title */
+  text-align: center; /* centered under PixCrypt */
+  font-style: italic; /* optional, makes it look like a tagline */
+}
+.logo-link {
+  text-decoration: none; /* remove underline */
+  color: inherit; /* inherit h1 color */
+  display: inline-flex; /* align icon and text properly */
+  align-items: center;
 }
 
+.logo-link:hover {
+  transition: 0.2s;
+  color: var(--accent-hover); /* optional hover effect */
+}
+.github-logo {
+  text-align: right;
+  background-color: red;
+}
+/* navbar */
+/* Navbar container */
+.navbar {
+  position: fixed; /* stay at top */
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center; /* center links */
+  gap: 2rem;
+  flex-wrap: wrap;
+  padding: 0.75rem 1rem;
+  background-color: #000000; /* white background */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* subtle shadow */
+  z-index: 1000;
+  transition: top 0.3s ease, background-color 0.3s ease;
+}
+
+/* Navbar links */
 .navbar a {
-  color: var(--accent);
+  color: #c5c5c5; /* dark gray */
   text-decoration: none;
   font-weight: 600;
-  transition: color 0.2s ease;
+  font-size: 1rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
 }
 
+/* Hover effect */
 .navbar a:hover {
-  color: var(--accent-hover);
+  background-color: #f3f4f6; /* light gray background */
+  color: #2563eb; /* blue accent */
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
+/* Active link highlight (optional) */
+.navbar a.active {
+  background-color: #2563eb;
+  color: #fff;
+}
+
+/* Responsive: stack links on smaller screens */
+@media (max-width: 600px) {
+  .navbar {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+  }
+}
+
+/* Push page content below navbar */
 
 .footer {
   text-align: center;
@@ -435,4 +492,75 @@ button.btn:hover {
   margin-top: 0.25rem;
   font-size: 0.9rem;
   color: #ffffff;
+}
+
+/*encrypt and decrypt focus*/
+#encrypt-focus,
+#decrypt-focus {
+  scroll-margin-top: 200px; /* height of your fixed header */
+}
+
+.image-heading {
+  text-align: center;
+  background-color: #121212;
+  margin-top: 80px;
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 20px;
+}
+
+/*Section below home page, for demo images showing how it works*/
+.image-container {
+  margin: 40px auto;
+  background: linear-gradient(135deg, #000000, #464646);
+  border-radius: 20px;
+  text-align: center;
+  padding: 30px;
+  width: 60%;
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 15px 5px rgba(0, 204, 107, 0.05);
+}
+
+.process-title {
+  font-size: 1.8rem;
+  color: white;
+  margin-bottom: 20px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.demo-images {
+  width: 80%;
+  border-radius: 15px;
+  object-fit: cover;
+  transition: transform 0.3s ease-in-out;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.9);
+}
+
+.demo-images:hover {
+  transform: scale(1.01);
+}
+
+.caption {
+  margin-top: 10px;
+  font-size: 1rem;
+  color: white;
+  font-weight: 500;
+}
+
+.arrow-down {
+  font-size: 2.5rem;
+  margin: 20px 0;
+  animation: bounce 1.2s infinite;
+  color: #00ff88;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(2px);
+  }
 }

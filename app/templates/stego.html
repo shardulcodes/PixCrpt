@@ -15,7 +15,7 @@ endblock %} {% block content %}
 
 <main class="tool-grid">
   <!-- Encrypt Section -->
-  <section class="tool-card encrypt-section">
+  <section class="tool-card encrypt-section" id="encrypt-focus">
     <h2><i class="fas fa-lock"></i> Encrypt Folder</h2>
     <form
       id="encrypt-form"
@@ -82,7 +82,7 @@ endblock %} {% block content %}
   </section>
 
   <!-- Decrypt Section -->
-  <section class="tool-card decrypt-section">
+  <section class="tool-card decrypt-section" id="decrypt-focus">
     <h2><i class="fas fa-unlock-alt"></i> Decrypt Image</h2>
     <form
       id="decrypt-form"
@@ -145,109 +145,113 @@ endblock %} {% block content %}
 </main>
 {% endblock %} {% block head %}
 <script>
-  function updateFileName(inputId) {
-    const input = document.getElementById(inputId);
-    input.addEventListener("change", () => {
-      const header = input.closest(".drop-box").querySelector("header h4");
-      if (input.files.length > 0) {
-        header.textContent =
-          input.files.length > 1
-            ? `${input.files.length} files selected`
-            : input.files[0].name;
-      }
-    });
-  }
-
-  function attachFakeProgress(formId) {
-    const form = document.getElementById(formId);
-    if (!form) return;
-
-    const progressWrapper = form.querySelector(".progress-wrapper");
-    const progressBar = progressWrapper.querySelector(".progress-bar");
-
-    form.addEventListener("submit", function (e) {
-      e.preventDefault(); // stop normal submission
-
-      progressWrapper.style.display = "block";
-      let progress = 0;
-
-      const interval = setInterval(() => {
-        progress += 1;
-        progressBar.style.width = progress + "%";
-
-        if (progress >= 100) {
-          clearInterval(interval);
-          form.submit(); // continue after fake progress
+  document.addEventListener("DOMContentLoaded", function () {
+    // Navbar transparency
+    const navbar = document.querySelector(".navbar");
+    if (navbar) {
+      window.addEventListener("scroll", () => {
+        const scrollY = window.scrollY;
+        if (scrollY > 10) {
+          // very slight scroll
+          navbar.style.backgroundColor = "rgba(255, 255, 255, 0.15)"; // slightly visible
+          navbar.style.boxShadow = "0 2px 4px rgba(0,0,0,0.05)";
+        } else {
+          navbar.style.backgroundColor = "rgba(255, 255, 255, 0)"; // fully transparent
+          navbar.style.boxShadow = "none";
         }
-      }, 30); // ~3 seconds
-    });
-  }
+      });
+    }
 
-  document.addEventListener("DOMContentLoaded", function () {
+    // File name update
+    function updateFileName(inputId) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      input.addEventListener("change", () => {
+        const header = input.closest(".drop-box").querySelector("header h4");
+        if (input.files.length > 0) {
+          header.textContent =
+            input.files.length > 1
+              ? `${input.files.length} files selected`
+              : input.files[0].name;
+        }
+      });
+    }
+
     updateFileName("upload");
     updateFileName("upload_decrypt");
 
-    attachFakeProgress("encrypt-form");
-    attachFakeProgress("decrypt-form");
-  });
-  function setupPasswordToggle(inputId, iconId) {
-    const passwordField = document.getElementById(inputId);
-    const toggleIcon = document.getElementById(iconId);
+    // Fake progress
+    function attachFakeProgress(formId) {
+      const form = document.getElementById(formId);
+      if (!form) return;
+      const progressWrapper = form.querySelector(".progress-wrapper");
+      const progressBar = progressWrapper.querySelector(".progress-bar");
 
-    toggleIcon.addEventListener("click", function () {
-      if (passwordField.type === "password") {
-        passwordField.type = "text";
-        toggleIcon.classList.remove("fa-eye");
-        toggleIcon.classList.add("fa-eye-slash");
-      } else {
-        passwordField.type = "password";
-        toggleIcon.classList.remove("fa-eye-slash");
-        toggleIcon.classList.add("fa-eye");
-      }
-    });
-  }
-
-  function enableDragAndDrop(dropBoxSelector, inputId) {
-    const dropBox = document.querySelector(dropBoxSelector);
-    const fileInput = document.getElementById(inputId);
-
-    // Highlight on drag over
-    dropBox.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      dropBox.classList.add("dragover");
-    });
-
-    // Remove highlight when leaving
-    dropBox.addEventListener("dragleave", () => {
-      dropBox.classList.remove("dragover");
-    });
-
-    // Handle file drop
-    dropBox.addEventListener("drop", (e) => {
-      e.preventDefault();
-      dropBox.classList.remove("dragover");
-
-      const files = e.dataTransfer.files;
-      if (files.length) {
-        fileInput.files = files; // Assign dropped files to input
-        fileInput.dispatchEvent(new Event("change")); // Trigger filename update
-      }
-    });
-  }
-
-  document.addEventListener("DOMContentLoaded", function () {
-    updateFileName("upload");
-    updateFileName("upload_decrypt");
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        progressWrapper.style.display = "block";
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += 1;
+          progressBar.style.width = progress + "%";
+          if (progress >= 100) {
+            clearInterval(interval);
+            form.submit();
+          }
+        }, 30);
+      });
+    }
 
     attachFakeProgress("encrypt-form");
     attachFakeProgress("decrypt-form");
+
+    // Password toggle
+    function setupPasswordToggle(inputId, iconId) {
+      const passwordField = document.getElementById(inputId);
+      const toggleIcon = document.getElementById(iconId);
+      if (!passwordField || !toggleIcon) return;
+      toggleIcon.addEventListener("click", function () {
+        if (passwordField.type === "password") {
+          passwordField.type = "text";
+          toggleIcon.classList.remove("fa-eye");
+          toggleIcon.classList.add("fa-eye-slash");
+        } else {
+          passwordField.type = "password";
+          toggleIcon.classList.remove("fa-eye-slash");
+          toggleIcon.classList.add("fa-eye");
+        }
+      });
+    }
 
     setupPasswordToggle("password", "showHidePassword");
     setupPasswordToggle("password_decrypt", "showHidePasswordDecrypt");
 
-    // Enable drag and drop
+    // Drag and drop
+    function enableDragAndDrop(dropBoxSelector, inputId) {
+      const dropBox = document.querySelector(dropBoxSelector);
+      const fileInput = document.getElementById(inputId);
+      if (!dropBox || !fileInput) return;
+
+      dropBox.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropBox.classList.add("dragover");
+      });
+      dropBox.addEventListener("dragleave", () => {
+        dropBox.classList.remove("dragover");
+      });
+      dropBox.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropBox.classList.remove("dragover");
+        if (e.dataTransfer.files.length) {
+          fileInput.files = e.dataTransfer.files;
+          fileInput.dispatchEvent(new Event("change"));
+        }
+      });
+    }
+
     enableDragAndDrop(".encrypt-section .drop-box", "upload");
     enableDragAndDrop(".decrypt-section .drop-box", "upload_decrypt");
   });
 </script>
+
 {% endblock %}

@@ -11,10 +11,10 @@ block content %}
   </p>
 
   <div class="home-buttons">
-    <a href="/stego/" class="btn" aria-label="Start Encrypting">
+    <a href="/stego/#encrypt-focus" class="btn" aria-label="Start Encrypting">
       <i class="fas fa-lock btn-icon"></i> Start Encrypting
     </a>
-    <a href="/stego/" class="btn" aria-label="Start Decrypting">
+    <a href="/stego/#decrypt-focus" class="btn" aria-label="Start Decrypting">
       <i class="fas fa-unlock-alt btn-icon"></i> Start Decrypting
     </a>
   </div>
@@ -34,5 +34,28 @@ block content %}
       </li>
     </ul>
   </section>
+</div>
+
+<div>
+  <div class="image-heading">
+    <h1>Convert your Folders to images like magic</h1>
+  </div>
+  <div class="image-container">
+    <img
+      class="demo-images"
+      src="https://i.pcmag.com/imagery/articles/050OPcHp7GZMp6jpQATfNDV-4.fit_lim.size_1050x.jpg"
+      alt="Original Image"
+    />
+
+    <div class="arrow-down">
+      <i class="fas fa-angle-double-down"></i>
+    </div>
+
+    <img
+      class="demo-images"
+      src="{{ url_for('static', filename='demo-image-encrypted.png') }}"
+      alt="Encrypted Image"
+    />
+  </div>
 </div>
 {% endblock %}
