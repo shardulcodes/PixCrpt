@@ -1,6 +1,5 @@
-{% extends "base.html" %} {% block title %}Encrypt & Decrypt - Stego Tool{%
+{% extends "base.html" %} {% block title %}Hide & Extract - Stego Tool{%
 endblock %} {% block content %}
-
 <!-- Flash Messages -->
 {% with messages = get_flashed_messages(with_categories=true) %} {% if messages
 %}
@@ -15,93 +14,49 @@ endblock %} {% block content %}
 {% endif %} {% endwith %}
 
 <main class="tool-grid">
-  <!-- Encrypt Section -->
-  <section class="tool-card encrypt-section" id="encrypt-focus">
-    <h2><i class="fas fa-lock"></i> Encrypt Folder</h2>
+  <!-- Hide Section -->
+  <section class="tool-card encrypt-section" id="hide-focus">
+    <h2><i class="fas fa-image"></i> Hide PNG in JPEG</h2>
     <form
-      id="encrypt-form"
+      id="hide-form"
       method="POST"
-      action="/stego/"
+      action="{{ url_for('masko.hide_image') }}"
       enctype="multipart/form-data"
     >
       <div class="drop-card">
-        <label for="upload"><i class="fas fa-folder-open"></i> Folder</label>
+        <label for="cover_jpeg"
+          ><i class="fas fa-photo-video"></i> Cover JPEG</label
+        >
         <div class="drop-box">
-          <header><h4>Select a folder to encrypt</h4></header>
-          <p>Multiple files supported</p>
+          <header><h4>Select JPEG file</h4></header>
+          <p>Only .jpg/.jpeg allowed</p>
           <input
             type="file"
-            name="upload"
-            id="upload"
-            webkitdirectory
-            directory
-            multiple
+            name="cover_jpeg"
+            id="cover_jpeg"
+            accept=".jpeg,.jpg"
             hidden
             required
           />
           <button
             type="button"
             class="btn"
-            onclick="document.getElementById('upload').click();"
+            onclick="document.getElementById('cover_jpeg').click();"
           >
-            <i class="fas fa-upload btn-icon"></i> Choose Folder
+            <i class="fas fa-upload btn-icon"></i> Choose JPEG
           </button>
         </div>
       </div>
-      <label for="password" class="password-label">
-        <i class="fas fa-key"></i> Set Password
-      </label>
-      <div class="password-wrapper">
-        <input
-          type="password"
-          name="password"
-          id="password"
-          placeholder="Enter a strong password"
-          required
-        />
-        <i class="fa fa-eye" aria-hidden="true" id="showHidePassword"></i>
-      </div>
 
-      <div class="progress-wrapper" style="display: none">
-        <div class="progress-bar"></div>
-      </div>
-
-      <button type="submit" class="btn">
-        <i class="fas fa-shield-alt btn-icon"></i> Encrypt & Convert
-      </button>
-    </form>
-
-    {% if image_url %}
-    <div class="image-preview">
-      <h3><i class="fas fa-image"></i> Encrypted Image</h3>
-      <a href="{{ image_url }}" download>
-        <img src="{{ image_url }}" alt="Encrypted Image" />
-      </a>
-      <p><i class="fas fa-download"></i> Click the image to download</p>
-    </div>
-    {% endif %}
-  </section>
-
-  <!-- Decrypt Section -->
-  <section class="tool-card decrypt-section" id="decrypt-focus">
-    <h2><i class="fas fa-unlock-alt"></i> Decrypt Image</h2>
-    <form
-      id="decrypt-form"
-      method="POST"
-      action="/stego/decrypt"
-      enctype="multipart/form-data"
-    >
       <div class="drop-card">
-        <label for="upload_decrypt">
-          <i class="fas fa-upload"></i> Encrypted Image
-        </label>
+        <label for="secret_png"><i class="fas fa-lock"></i> Secret PNG</label>
         <div class="drop-box">
-          <header><h4>Select PNG image to decrypt</h4></header>
+          <header><h4>Select PNG to hide</h4></header>
           <p>Only .png files allowed</p>
           <input
             type="file"
-            name="upload_decrypt"
-            id="upload_decrypt"
+            name="secret_png"
+            id="secret_png"
             accept="image/png"
             hidden
             required
@@ -109,29 +64,11 @@ endblock %} {% block content %}
           <button
             type="button"
             class="btn"
-            onclick="document.getElementById('upload_decrypt').click();"
+            onclick="document.getElementById('secret_png').click();"
           >
-            <i class="fas fa-file-image btn-icon"></i> Choose Image
+            <i class="fas fa-upload btn-icon"></i> Choose PNG
           </button>
         </div>
-      </div>
-
-      <label for="password_decrypt">
-        <i class="fas fa-key"></i> Enter Password
-      </label>
-      <div class="password-wrapper">
-        <input
-          type="password"
-          name="password_decrypt"
-          id="password_decrypt"
-          placeholder="Enter the password used during encryption"
-          required
-        />
-        <i
-          class="fa fa-eye"
-          aria-hidden="true"
-          id="showHidePasswordDecrypt"
-        ></i>
       </div>
 
       <div class="progress-wrapper" style="display: none">
@@ -139,11 +76,79 @@ endblock %} {% block content %}
       </div>
 
       <button type="submit" class="btn">
-        <i class="fas fa-unlock btn-icon"></i> Decrypt & Download Folder
+        <i class="fas fa-shield-alt btn-icon"></i> Hide Image
       </button>
     </form>
   </section>
+
+  <!-- Extract Section -->
+  <section class="tool-card decrypt-section" id="extract-focus">
+    <h2><i class="fas fa-search"></i> Extract PNG from JPEG</h2>
+    <form
+      id="extract-form"
+      method="POST"
+      action="{{ url_for('masko.extract_image') }}"
+      enctype="multipart/form-data"
+    >
+      <div class="drop-card">
+        <label for="stego_jpeg">
+          <i class="fas fa-upload"></i> Stego JPEG
+        </label>
+        <div class="drop-box">
+          <header><h4>Select stego JPEG</h4></header>
+          <p>Upload the JPEG that contains a hidden PNG</p>
+          <input
+            type="file"
+            name="stego_jpeg"
+            id="stego_jpeg"
+            accept=".jpeg,.jpg"
+            hidden
+            required
+          />
+          <button
+            type="button"
+            class="btn"
+            onclick="document.getElementById('stego_jpeg').click();"
+          >
+            <i class="fas fa-file-image btn-icon"></i> Choose JPEG
+          </button>
+        </div>
+        
+      </div>
+
+      <div class="progress-wrapper" style="display: none">
+        <div class="progress-bar"></div>
+      </div>
+
+      <button type="submit" class="btn">
+        <i class="fas fa-download btn-icon"></i> Extract Image
+      </button>
+    </form>
+  
 </main>
+<aside class="stego-info-sidebar" aria-label="Stego information">
+  <div class="info-inner">
+    <header>
+      <h3><i class="fas fa-info-circle"></i> Detection Notice</h3>
+      
+    </header>
+
+    <div>
+  <p>
+    <strong>Detection notice:</strong> Files processed by this tool may be flagged as suspicious by automated scanners, upload validators, or forensic tools. Detection likelihood depends on the policies of the receiving system.
+  </p>
+
+  <ul>
+    <li><strong>Practical impact:</strong> Some platforms may reject, sanitize, or mark files as problematic during upload or review.</li>
+    <li><strong>Product guidance:</strong> If your workflow requires lower detection risk, consider using the alternative encryption feature which is purpose-built for that use case.</li>
+  </ul>
+
+
+</div>
+
+  </div>
+</aside>
+
 {% endblock %} {% block head %}
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -176,8 +181,9 @@ endblock %} {% block content %}
         }
       });
     }
-    updateFileName("upload");
-    updateFileName("upload_decrypt");
+    updateFileName("cover_jpeg");
+    updateFileName("secret_png");
+    updateFileName("stego_jpeg");
 
     // Fake progress
     function attachFakeProgress(formId) {
@@ -200,57 +206,36 @@ endblock %} {% block content %}
         }, 30);
       });
     }
-    attachFakeProgress("encrypt-form");
-    attachFakeProgress("decrypt-form");
+    attachFakeProgress("hide-form");
+    attachFakeProgress("extract-form");
 
-    // Password toggle
-    function setupPasswordToggle(inputId, iconId) {
-      const passwordField = document.getElementById(inputId);
-      const toggleIcon = document.getElementById(iconId);
-      if (!passwordField || !toggleIcon) return;
-      toggleIcon.addEventListener("click", function () {
-        if (passwordField.type === "password") {
-          passwordField.type = "text";
-          toggleIcon.classList.remove("fa-eye");
-          toggleIcon.classList.add("fa-eye-slash");
-        } else {
-          passwordField.type = "password";
-          toggleIcon.classList.remove("fa-eye-slash");
-          toggleIcon.classList.add("fa-eye");
-        }
-      });
-    }
-    setupPasswordToggle("password", "showHidePassword");
-    setupPasswordToggle("password_decrypt", "showHidePasswordDecrypt");
-
-    // ✅ Scroll-to-encrypt (moved into main DOMContentLoaded)
-    const encryptBtn = document.getElementById("encrypt-btn");
-    if (encryptBtn) {
-      encryptBtn.addEventListener("click", function (e) {
+    // Scroll-to-section buttons (if you want navbar links to scroll)
+    const hideBtn = document.getElementById("hide-btn");
+    if (hideBtn) {
+      hideBtn.addEventListener("click", function (e) {
         e.preventDefault();
-        localStorage.setItem("scrollTarget", "encrypt-focus"); // save target
+        localStorage.setItem("scrollTarget", "hide-focus");
         window.location.href = "/stego";
       });
     }
 
-    // Decrypt Button
-    const decryptBtn = document.getElementById("decrypt-btn");
-    if (decryptBtn) {
-      decryptBtn.addEventListener("click", function (e) {
+    const extractBtn = document.getElementById("extract-btn");
+    if (extractBtn) {
+      extractBtn.addEventListener("click", function (e) {
         e.preventDefault();
-        localStorage.setItem("scrollTarget", "decrypt-focus"); // save target
+        localStorage.setItem("scrollTarget", "extract-focus");
         window.location.href = "/stego";
       });
     }
 
-    // When on stego page, scroll to target if exists
+    // Scroll target restore
     const scrollTarget = localStorage.getItem("scrollTarget");
     if (scrollTarget) {
       const el = document.getElementById(scrollTarget);
       if (el) {
         el.scrollIntoView({ behavior: "smooth" });
       }
-      localStorage.removeItem("scrollTarget"); // clear after scrolling
+      localStorage.removeItem("scrollTarget");
     }
 
     // Drag and drop
@@ -275,9 +260,14 @@ endblock %} {% block content %}
         }
       });
     }
-    enableDragAndDrop(".encrypt-section .drop-box", "upload");
-    enableDragAndDrop(".decrypt-section .drop-box", "upload_decrypt");
+    enableDragAndDrop(".encrypt-section .drop-box", "cover_jpeg");
+    enableDragAndDrop(
+      ".encrypt-section .drop-box:nth-of-type(2)",
+      "secret_png"
+    );
+    enableDragAndDrop(".decrypt-section .drop-box", "stego_jpeg");
   });
-</script>
 
+  
+</script>
 {% endblock %}

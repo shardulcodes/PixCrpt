@@ -35,7 +35,8 @@ def decrypt():
             recover_folder_from_image(input_path, output_dir, password)
         except Exception as e:
             flash("Decryption failed: Incorrect password or corrupted image.", "error")
-            return redirect(url_for("decrypt.decrypt"))
+            return render_template("stego.html")
+            #return redirect(url_for("decrypt.decrypt"))
 
         shutil.make_archive(output_dir, 'zip', output_dir)
         os.remove(input_path)

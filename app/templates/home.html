@@ -11,10 +11,10 @@ block content %}
   </p>
 
   <div class="home-buttons">
-    <a href="/stego/#encrypt-focus" class="btn" aria-label="Start Encrypting">
+    <a href="/stego" id="encrypt-btn" class="btn" aria-label="Start Encrypting">
       <i class="fas fa-lock btn-icon"></i> Start Encrypting
     </a>
-    <a href="/stego/#decrypt-focus" class="btn" aria-label="Start Decrypting">
+    <a href="/stego" id="decrypt-btn" class="btn" aria-label="Start Decrypting">
       <i class="fas fa-unlock-alt btn-icon"></i> Start Decrypting
     </a>
   </div>
@@ -35,10 +35,23 @@ block content %}
     </ul>
   </section>
 </div>
+<section class="home-mask">
+  <h2>New! <span class="highlight">Mask PNG inside JPEG</span></h2>
+  <p>
+    Securely hide any PNG inside a JPEG image. Download the stego JPEG
+    instantly!
+  </p>
+  <a href="/hide-image" class="btn">
+    <i class="fas fa-lock btn-icon"></i>Masking Tool
+  </a>
+</section>
 
 <div>
   <div class="image-heading">
-    <h1>Convert your Folders to images like magic</h1>
+    <h1 class="headline">
+      Convert your Data to <span class="highlight">Living Images</span>
+      <i class="fas fa-magic"></i>
+    </h1>
   </div>
   <div class="image-container">
     <img
@@ -58,4 +71,24 @@ block content %}
     />
   </div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const encryptBtn = document.getElementById("encrypt-btn");
+    if (encryptBtn) {
+      encryptBtn.addEventListener("click", function () {
+        localStorage.setItem("scrollTarget", "encrypt-focus");
+        // no preventDefault needed; the link will navigate to /stego
+      });
+    }
+
+    const decryptBtn = document.getElementById("decrypt-btn");
+    if (decryptBtn) {
+      decryptBtn.addEventListener("click", function () {
+        localStorage.setItem("scrollTarget", "decrypt-focus");
+      });
+    }
+  });
+</script>
+
 {% endblock %}

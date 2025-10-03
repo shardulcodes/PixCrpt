@@ -13,12 +13,30 @@
   --success-text: #a5d6a7;
 }
 
+/* :root.light {
+  
+  --bg-dark: #ffffff;
+  --bg-card: #f9f9f9;
+  --accent: #000000;
+  --accent-hover: #333333;
+  --input-bg: #f0f0f0;
+  --text-light: #000000;
+
+  --error-bg: #ffffff;
+  --error-text: #cc0000;
+
+  --success-bg: #ffffff;
+  --success-text: #008000;
+} */
+
 body {
   margin: 0;
   font-family: "JetBrains Mono", monospace;
   background-color: var(--bg-dark);
   color: var(--text-light);
   padding: 2rem;
+  padding-bottom: 0px;
+  height: 100%;
 }
 
 .container {
@@ -131,6 +149,7 @@ button.btn:hover {
   align-items: center;
   gap: 8px;
   margin-bottom: 0.5rem;
+  position: relative;
 }
 
 .messages .success {
@@ -141,6 +160,25 @@ button.btn:hover {
 .messages .error {
   background-color: var(--error-bg);
   color: var(--error-text);
+}
+/*close button on flash message*/
+
+.close-btn {
+  background-color: inherit;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  color: white;
+  aspect-ratio: 1;
+
+  align-content: right;
+  cursor: pointer;
+  position: absolute;
+  right: 5px;
+}
+.close-btn:hover {
+  color: rgb(0, 0, 0);
+  transition: 0.2s;
 }
 
 .inline-icon {
@@ -158,7 +196,13 @@ button.btn:hover {
 .drop-card {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 1.5rem;
+}
+.encrypt-section,
+.decrypt-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .drop-box {
@@ -228,24 +272,29 @@ button.btn:hover {
 /* navbar */
 /* Navbar container */
 .navbar {
-  position: fixed; /* stay at top */
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   display: flex;
-  justify-content: center; /* center links */
-  gap: 2rem;
-  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between; /* LEFT links on left, mask button on right */
   padding: 0.75rem 1rem;
-  background-color: #000000; /* white background */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* subtle shadow */
+  background-color: transparent;
   z-index: 1000;
-  transition: top 0.3s ease, background-color 0.3s ease;
+  box-sizing: border-box; /* include padding in width */
 }
 
-/* Navbar links */
-.navbar a {
-  color: #c5c5c5; /* dark gray */
+/* Left links container */
+.nav-left {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap; /* optional: wraps if screen is small */
+}
+
+/* Navbar left links */
+.nav-left a {
+  color: #c5c5c5;
   text-decoration: none;
   font-weight: 600;
   font-size: 1rem;
@@ -254,18 +303,48 @@ button.btn:hover {
   transition: all 0.2s ease;
 }
 
-/* Hover effect */
-.navbar a:hover {
-  background-color: #f3f4f6; /* light gray background */
-  color: #2563eb; /* blue accent */
+.nav-left a:hover {
+  background-color: var(--accent);
+  color: black;
   transform: translateY(-2px);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Active link highlight (optional) */
-.navbar a.active {
-  background-color: #2563eb;
-  color: #fff;
+/* Mask button on the right */
+.mask-btn {
+  font-size: 0.85rem;
+  padding: 0.4rem 0.8rem;
+  background: var(--accent);
+  color: #000;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+.mask-btn:hover {
+  background: var(--accent-hover);
+}
+
+/* Right-aligned mask button */
+.mask-btn {
+  margin-left: auto; /* pushes to far right */
+  font-size: 0.85rem;
+  padding: 0.4rem 0.8rem;
+  background: var(--accent);
+  color: #000;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  transition: background 0.3s ease;
+}
+
+.mask-btn:hover {
+  background: var(--accent-hover);
 }
 
 /* Responsive: stack links on smaller screens */
@@ -555,6 +634,227 @@ button.btn:hover {
   color: #00ff88;
 }
 
+/* Home Mask Section */
+.home-mask {
+  background: rgba(0, 255, 136, 0.05); /* subtle green tint to match accent */
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-top: 3rem;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0, 255, 136, 0.2);
+  backdrop-filter: blur(12px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.home-mask:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 255, 136, 0.35);
+  background: rgba(0, 255, 136, 0.08);
+}
+
+.home-mask h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: var(--accent);
+}
+
+.home-mask h2 .highlight {
+  color: #00ff88;
+  font-weight: 700;
+}
+
+.home-mask p {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  color: #ccc;
+}
+
+.home-mask .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.75rem 1.2rem;
+  background: var(--accent);
+  color: #000;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: background 0.3s ease, transform 0.2s ease;
+  text-decoration: none;
+}
+
+.home-mask .btn:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+}
+.stego-info-sidebar {
+  width: 100%; /* Full width of container */
+  max-width: 95%; /* Adjust to match the combined width of your two forms */
+  margin: 1.5rem auto 0; /* Top margin pushes it below the forms, auto centers */
+  padding: 1.2rem 1.5rem;
+  border-radius: 12px;
+  background-color: rgba(40, 40, 40, 0.95); /* Dark background for contrast */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+
+  color: #eaeaea;
+  line-height: 1.55;
+  font-size: 0.95rem;
+}
+
+/* Header styling */
+.stego-info-sidebar header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.stego-info-sidebar header h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0;
+  color: #fff;
+}
+
+/* Body styling */
+.stego-info-sidebar .info-body p {
+  margin-bottom: 0.6rem;
+}
+
+.stego-info-sidebar .info-body ul {
+  margin: 0.3rem 0 0.6rem 1.2rem;
+  padding: 0;
+  list-style-type: disc;
+  color: #ccc;
+}
+
+.stego-info-sidebar .info-body li {
+  margin-bottom: 0.4rem;
+}
+
+/* Optional: subtle icon highlight */
+.stego-info-sidebar i {
+  color: #ff6767;
+  margin-right: 10px;
+}
+
+/* ABOUT PAGE */
+/* About Page */
+.about-page {
+  padding: 2rem 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.about-container {
+  max-width: 900px;
+  background: rgba(25, 25, 25, 0.95);
+  padding: 2.5rem 3rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 30px rgba(0, 255, 136, 0.1);
+  backdrop-filter: blur(10px);
+  color: #eaeaea;
+}
+
+.about-title {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--accent);
+}
+
+.about-title .highlight {
+  color: #00ff88;
+}
+
+.about-intro {
+  font-size: 1.05rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  line-height: 1.7;
+  color: #ccc;
+}
+
+.about-section {
+  margin-bottom: 1.8rem;
+}
+
+.about-section h3 {
+  font-size: 1.3rem;
+  color: var(--accent);
+  margin-bottom: 0.7rem;
+}
+
+.about-section p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #ddd;
+}
+
+.about-section ul {
+  list-style-type: disc;
+  margin-left: 1.5rem;
+  color: #ccc;
+}
+
+.about-section ul li {
+  margin-bottom: 0.5rem;
+}
+
+/* Links */
+.about-section a {
+  color: var(--accent);
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.about-section a:hover {
+  color: var(--accent-hover);
+}
+/* Theme toggle button */
+.theme-btn {
+  background: var(--bg-card);
+  color: var(--accent);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.theme-btn:hover {
+  background: var(--accent);
+  color: var(--bg-dark);
+  transform: scale(1.1);
+}
+
+.theme-btn:active {
+  transform: scale(0.95);
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .about-container {
+    padding: 1.8rem 2rem;
+  }
+
+  .about-title {
+    font-size: 1.8rem;
+  }
+
+  .about-section h3 {
+    font-size: 1.15rem;
+  }
+}
+
 @keyframes bounce {
   0%,
   100% {
@@ -563,4 +863,19 @@ button.btn:hover {
   50% {
     transform: translateY(2px);
   }
+}
+html {
+  scroll-behavior: smooth;
+}
+.headline {
+  background: linear-gradient(90deg, #1bff4c, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+.headline .highlight {
+  background: linear-gradient(90deg, #6c63ff, #ff6584);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
 }

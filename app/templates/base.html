@@ -2,20 +2,20 @@
 <html lang="en">
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <meta charset="UTF-8" />
     <title>{% block title %}Stego Tool{% endblock %}</title>
+
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/stego.css') }}"
     />
-
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+
     {% block head %}{% endblock %}
   </head>
   <body>
@@ -28,17 +28,54 @@
           </a>
         </h1>
         <h2 class="tagline">Stego Encryptor & Decryptor</h2>
+        <!-- <button id="theme-toggle" class="theme-btn">
+          <i class="fas fa-moon"></i>
+        </button> -->
       </div>
     </header>
 
-    <!-- Page content (centered with padding) -->
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="nav-left">
+        <a href="/stego">Encrypt</a>
+        <a href="/stego">Decrypt</a>
+        <a href="/about">About</a>
+      </div>
+      <a href="/hide-image" class="mask-btn">Mask Image</a>
+    </nav>
+
+    <!-- Page content -->
     <main class="container">{% block content %}{% endblock %}</main>
 
-    <!-- Full-width footer -->
+    <!-- Footer -->
     <footer class="footer">
       <div class="footer-inner">
         <p>&copy; 2025 StegoTool. Shardul</p>
       </div>
     </footer>
+
+    <!-- Theme toggle logic -->
+    <script>
+      const themeToggle = document.getElementById("theme-toggle");
+      const root = document.documentElement;
+      const savedTheme = localStorage.getItem("theme");
+
+      if (savedTheme === "light") {
+        root.classList.add("light");
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+      }
+
+      themeToggle.addEventListener("click", () => {
+        root.classList.toggle("light");
+
+        if (root.classList.contains("light")) {
+          themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+          localStorage.setItem("theme", "light");
+        } else {
+          themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+          localStorage.setItem("theme", "dark");
+        }
+      });
+    </script>
   </body>
 </html>
