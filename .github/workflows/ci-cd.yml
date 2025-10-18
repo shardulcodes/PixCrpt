@@ -48,9 +48,9 @@ jobs:
           docker build -t $IMAGE .
           docker push $IMAGE
 
-      # Step 7: SSH into EC2 and trigger deployment script
+      # Step 7: SSH into EC2 and run deploy.sh
       - name: Deploy to EC2
-        uses: appleboy/ssh-action@v1.10.0
+        uses: appleboy/ssh-action@v0.1.6 # <-- Correct existing version
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
