@@ -1,17 +1,19 @@
 name: CI/CD Pipeline - PixCrypt
 
+# Triggers: push to main, PRs to main, and manual trigger
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   build-test-push-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout code
+      # Step 1: Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -28,8 +30,8 @@ jobs:
           pip install -r requirements.txt
           pip install flake8 pytest
 
-      # Step 4: Lint & test (optional)
-      - name: Run lint and tests
+      # Step 4: Lint & run tests (optional)
+      - name: Lint & Test
         run: |
           flake8 . || echo "Lint warnings only"
           pytest || echo "No tests yet"
@@ -42,7 +44,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       # Step 6: Build & push Docker image
-      - name: Build and push Docker image
+      - name: Build & Push Docker Image
         run: |
           IMAGE=${{ secrets.DOCKER_HUB_USERNAME }}/pixcrypt:latest
           docker build -t $IMAGE .
@@ -50,13 +52,17 @@ jobs:
 
       # Step 7: SSH into EC2 and run deploy.sh
       - name: Deploy to EC2
-        uses: appleboy/ssh-action@v0.1.6 # <-- Correct existing version
+        uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            chmod +x /home/ubuntu/deploy/deploy.sh
-            /home/ubuntu/deploy/deploy.sh
+            # Export Docker username for deploy.sh
+            export DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}
 
-#commands fixed
+            # Ensure deploy.sh is executable
+            chmod +x /home/ubuntu/deploy/deploy.sh
+
+            # Run deploy.sh
+            /home/ubuntu/deploy/deploy.sh
