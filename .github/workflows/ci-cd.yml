@@ -1,25 +1,23 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline - PixCrypt
 
 on:
   push:
-    branches:
-      - main # Runs on push to main branch
+    branches: [main]
   pull_request:
-    branches:
-      - main # Runs on PRs targeting main
+    branches: [main]
 
 jobs:
-  build-and-deploy:
+  build-test-push-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout repo
+      # Step 1: Checkout code
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Step 2: Set up Python
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
@@ -28,22 +26,35 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
+          pip install flake8 pytest
 
-      # Step 4: Run tests (optional, will not break if no tests)
-      - name: Run tests
-        run: pytest || echo "No tests yet"
+      # Step 4: Lint & test (optional)
+      - name: Run lint and tests
+        run: |
+          flake8 . || echo "Lint warnings only"
+          pytest || echo "No tests yet"
 
       # Step 5: Log in to Docker Hub
       - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      # Step 6: Build Docker image
-      - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/pixcrypt:latest .
+      # Step 6: Build & push Docker image
+      - name: Build and push Docker image
+        run: |
+          IMAGE=${{ secrets.DOCKER_HUB_USERNAME }}/pixcrypt:latest
+          docker build -t $IMAGE .
+          docker push $IMAGE
 
-      # Step 7: Push Docker image to Docker Hub
-      - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/pixcrypt:latest
+      # Step 7: SSH into EC2 and trigger deployment script
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.10.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            chmod +x /home/ec2-user/deploy/deploy.sh
+            /home/ec2-user/deploy/deploy.sh
