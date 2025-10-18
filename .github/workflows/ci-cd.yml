@@ -58,3 +58,4 @@ jobs:
           script: |
             chmod +x /home/ec2-user/deploy/deploy.sh
             /home/ec2-user/deploy/deploy.sh
+            #fixed
