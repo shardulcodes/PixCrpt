@@ -9,6 +9,9 @@ app = Flask(
     static_folder="app/static"
 )
 
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100 MB
+
+
 app.secret_key = "supersecretkey"
 app.register_blueprint(stego_bp)
 app.register_blueprint(decrypt_bp)
